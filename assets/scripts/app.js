@@ -12,17 +12,47 @@ class DOMHelper {
     }
 }
 
-class ToolTip {}
+class ToolTip {
+    constructor(projectId) {
+        this.id = projectId;
+    }
+
+    render() {
+        const rootEl = document.getElementById(this.id);
+
+        const isCreated = rootEl.querySelector('p.card');
+        if(isCreated) {
+            return;
+        }
+        
+        const infoData = rootEl.dataset.extraInfo;
+        const toolTipEl = document.createElement('p');
+        toolTipEl.textContent = infoData;
+        toolTipEl.style.position = 'absolute';
+        toolTipEl.classList = 'card';
+        toolTipEl.addEventListener('click', this.deleteToolTip);
+        rootEl.append(toolTipEl);
+    }
+
+    deleteToolTip(el) {
+        console.log(el, 'hello')
+        el.remove();
+    }
+}
 
 class ProjectItem {
     constructor(id, updateProjectListFunction, type) {
         this.id = id;
         this.updateProjectListHandler = updateProjectListFunction;
-        this.connectMoreInfoButton();
+        this.connectMoreInfoButton(id);
         this.connectSwitchButton(type)
     }
 
-    connectMoreInfoButton() {}
+    connectMoreInfoButton(id) {
+        const moreInfoBtn = document.getElementById(id).querySelector('button');
+        const toolTip = new ToolTip(id);
+        moreInfoBtn.addEventListener('click', toolTip.render.bind(this));        
+    }
 
     connectSwitchButton(type) {
         const projectItemEl = document.getElementById(this.id);
