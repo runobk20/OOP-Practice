@@ -15,6 +15,7 @@ class DOMHelper {
 class ToolTip {
     constructor(projectId) {
         this.id = projectId;
+        this.element;
     }
 
     render() {
@@ -26,17 +27,19 @@ class ToolTip {
         }
         
         const infoData = rootEl.dataset.extraInfo;
-        const toolTipEl = document.createElement('p');
+        const toolTipEl = document.createElement('div');
         toolTipEl.textContent = infoData;
         toolTipEl.style.position = 'absolute';
         toolTipEl.classList = 'card';
-        toolTipEl.addEventListener('click', this.deleteToolTip);
         rootEl.append(toolTipEl);
+        this.element = toolTipEl;
+        this.element.addEventListener('click', this.deleteToolTip);
     }
 
-    deleteToolTip(el) {
-        console.log(el, 'hello')
-        el.remove();
+    deleteToolTip() {
+        if (this.element) {
+            this.element.remove();
+        }
     }
 }
 
@@ -44,14 +47,14 @@ class ProjectItem {
     constructor(id, updateProjectListFunction, type) {
         this.id = id;
         this.updateProjectListHandler = updateProjectListFunction;
-        this.connectMoreInfoButton(id);
+        this.connectMoreInfoButton();
         this.connectSwitchButton(type)
     }
 
-    connectMoreInfoButton(id) {
-        const moreInfoBtn = document.getElementById(id).querySelector('button');
-        const toolTip = new ToolTip(id);
-        moreInfoBtn.addEventListener('click', toolTip.render.bind(this));        
+    connectMoreInfoButton() {
+        const moreInfoBtn = document.getElementById(this.id).querySelector('button');
+        const toolTip = new ToolTip(this.id);
+        moreInfoBtn.addEventListener('click', toolTip.render.bind(this));
     }
 
     connectSwitchButton(type) {
